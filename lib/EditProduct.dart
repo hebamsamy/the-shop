@@ -21,6 +21,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
     print(widget.id);
     //get one by id
     //display it in 
+    // ProductCollaction.doc(widget.id).update(
+    //   {
+
+    //   }
+    // )
   }
 
   SavaData() {

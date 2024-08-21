@@ -21,41 +21,51 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Welcome"),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.of(context).pushNamed("/register");
+          }, icon: Icon(Icons.person))
+        ],
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection("product").snapshots(),
           builder: (context, snapshots) {
             if (snapshots.connectionState == ConnectionState.active ||
                 snapshots.connectionState == ConnectionState.done) {
-              return ListView(
-                children: snapshots.data!.docs.map((item) {
-                  return Dismissible(
-                    onDismissed: (direction) {
-                      deleteProduct(item.id, context);
-                    },
-                    key: ValueKey(item.id),
-                    child: Card(
-                      child: ListTile(
-                        title: Text(item.data()["name"]),
-                        leading: CircleAvatar(
-                          child: Image.network(item.data()["imgUrl"]),
+              if (snapshots.data!.docs.length != 0) {
+                return ListView(
+                  children: snapshots.data!.docs.map((item) {
+                    return Dismissible(
+                      onDismissed: (direction) {
+                        deleteProduct(item.id, context);
+                      },
+                      key: ValueKey(item.id),
+                      child: Card(
+                        child: ListTile(
+                          title: Text(item.data()["name"]),
+                          leading: CircleAvatar(
+                            child: Image.network(item.data()["imgUrl"]),
+                          ),
+                          trailing: IconButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditProductScreen(id: item.id)));
+                              },
+                              icon: Icon(Icons.edit)),
                         ),
-                        trailing: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => EditProductScreen(id: item.id)));
-                            },
-                            icon: Icon(Icons.edit)),
                       ),
-                    ),
-                  );
-                }).toList(),
-              );
+                    );
+                  }).toList(),
+                );
+              } else {
+                return Center(
+                  child: Text("NO Data Yet"),
+                );
+              }
             } else {
               //show loader
-              return Center(
-                child: Text("NO Data Yet"),
-              );
+              return Center(child: CircularProgressIndicator());
             }
           }),
       floatingActionButton: FloatingActionButton(

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/firebase_options.dart';
 import 'package:shop/homeScreen.dart';
+import 'package:shop/registerScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +28,9 @@ class MyApp extends StatelessWidget {
               );
             }
           }),
-
+routes: {
+  "/register": (context)=> Registerscreen()
+},
     );
   }
 }
